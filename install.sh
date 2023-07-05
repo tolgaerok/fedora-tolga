@@ -92,36 +92,33 @@ for package in "${packages[@]}"; do
     fi
 done
 
-## End
 echo -e "\nSoftware install complete..."
 
 # Download teamviewer
-download_url="https://dl.teamviewer.com/download/linux/version_15x/teamviewer_15.43.6_amd64.deb?utm_source=google&utm_medium=cpc&utm_campaign=au%7Cb%7Cpr%7C22%7Cjun%7Ctv-core-brand-only-exact-sn%7Cfree%7Ct0%7C0&utm_content=Exact&utm_term=teamviewer&ref=https%3A%2F%2Fwww.teamviewer.com%2Fen-au%2Fdownload%2Flinux%2F%3Futm_source%3Dgoogle%26utm_medium%3Dcpc%26utm_campaign%3Dau%257Cb%257Cpr%257C22%257Cjun%257Ctv-core-brand-only-exact-sn%257Cfree%257Ct0%257C0%26utm_content%3DExact%26utm_term%3Dteamviewer"
-download_location="/tmp/teamviewer_15.43.6_amd64.deb"
+download_url="https://dl.teamviewer.com/download/linux/version_15x/teamviewer_15.43.6_amd64.rpm"
+download_location="/tmp/teamviewer_15.43.6_amd64.rpm"
 
-echo "Downloading teamviewer..."
+echo "Downloading TeamViewer..."
 wget -O "$download_location" "$download_url"
 
-# Install Visual Studio Code
-echo "Installing teamviwer..."
-sudo dpkg -i "$download_location"
-sudo apt-get install -f -y
+# Install TeamViewer
+echo "Installing TeamViewer..."
+sudo dnf install "$download_location" -y
 
 # Cleanup
 echo "Cleaning up..."
 rm "$download_location"
 
 # Download Visual Studio Code
-download_url="https://code.visualstudio.com/sha/download?build=stable&os=linux-deb-x64"
-download_location="/tmp/vscode.deb"
+download_url="https://code.visualstudio.com/sha/download?build=stable&os=linux-rpm-x64"
+download_location="/tmp/vscode.rpm"
 
 echo "Downloading Visual Studio Code..."
 wget -O "$download_location" "$download_url"
 
 # Install Visual Studio Code
 echo "Installing Visual Studio Code..."
-sudo dpkg -i "$download_location"
-sudo apt-get install -f -y
+sudo dnf install "$download_location" -y
 
 # Cleanup
 echo "Cleaning up..."
@@ -129,25 +126,25 @@ rm "$download_location"
 
 echo "Installation completed."
 
-# Install system components for powershell
-sudo apt update && sudo apt install -y curl gnupg apt-transport-https
+# Install system components for PowerShell
+sudo dnf install curl gpg -y
 
 # Save the public repository GPG keys
-curl https://packages.microsoft.com/keys/microsoft.asc | sudo gpg --yes --dearmor --output /usr/share/keyrings/microsoft.gpg
+sudo curl https://packages.microsoft.com/keys/microsoft.asc | sudo gpg --yes --dearmor --output /etc/pki/rpm-gpg/microsoft.gpg
 
 # Register the Microsoft Product feed
-sudo sh -c 'echo "deb [arch=amd64 signed-by=/usr/share/keyrings/microsoft.gpg] https://packages.microsoft.com/repos/microsoft-debian-bullseye-prod bullseye main" > /etc/apt/sources.list.d/microsoft.list'
+sudo dnf config-manager --add-repo https://packages.microsoft.com/yumrepos/microsoft-rhel8.1-prod.repo
 
 # Install PowerShell
-sudo apt update && sudo apt install -y powershell
+sudo dnf install powershell -y
 
 # Start PowerShell
 # pwsh
 
-read -r -p "Installing Nvidia..." -t 2 -n 1 -s
+read -r -p "Setup SAMBA and system tweaks..." -t 2 -n 1 -s
 
-## Update system
-echo -e "\e[94mSpeeding Up DNF before installing Nvidia and RPM fusions\e[0m\n"
+## Update system first
+echo -e "\e[94mSpeeding Up DNF and set-up RPM fusions\e[0m\n"
 
 echo 'fastestmirror=1' | sudo tee -a /etc/dnf/dnf.conf
 echo 'max_parallel_downloads=10' | sudo tee -a /etc/dnf/dnf.conf
@@ -155,6 +152,16 @@ echo 'deltarpm=true' | sudo tee -a /etc/dnf/dnf.conf
 
 sleep 3
 clear
+
+echo -e "\e[94mInstall SAMBA and dependencies\e[0m\n"
+
+# Install Samba and its dependencies
+sudo dnf install samba samba-client samba-common cifs-utils winbind -y
+
+sleep 3
+clear
+
+read -r -p "Copy custom samba files..." -t 2 -n 1 -s
 
 # Samba configurations files
 read -r -p "Copying samba files?
@@ -209,7 +216,7 @@ read -r -p "Continuing...
 " -t 1 -n 1 -s
 
 # Create samba user/group
-read -r -p "Install samba and create user/group
+read -r -p "Set-up samba user & group's
 " -t 2 -n 1 -s
 
 sudo groupadd samba
@@ -352,6 +359,9 @@ sudo ls /mnt/smb-rsync || {
 read -r -p "
 Continuing..." -t 1 -n 1 -s
 
+sleep 2
+clear
+
 read -r -p "Copy WALLPAPER to user home
 " -t 2 -n 1 -s
 
@@ -376,12 +386,7 @@ echo ""
 
 echo "Continuing..."
 sleep 1
-
-echo "Done. Time to defrag or fstrim."
-sudo fstrim -av
-echo ""
-echo "Operation completed."
-echo ""
+clear
 
 ## Enable Free and non-free RPM fusions
 sudo dnf install -y https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm https://mirrors.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm
@@ -408,9 +413,10 @@ sudo dnf install -y vdpauinfo libva-vdpau-driver libva-utils
 sudo dnf install -y vulkan
 sudo dnf autoremove -y
 
+sleep 1
 clear
 
-read -r -p "Cleaning up grub and uninstall nouveau driver
+read -r -p "Cleaning up grub and uninstalling nouveau driver
 " -t 2 -n 1 -s
 
 # Path to the grub configuration file
@@ -442,6 +448,12 @@ sudo nvidia-settings
 
 read -r -p "
 ..... Complete" -t 1 -n 1 -s
+
+echo "Done. Time to defrag or fstrim."
+sudo fstrim -av
+echo ""
+echo "Operation completed."
+echo ""
 
 # Display Nvidia version installed
 driver_version=$(modinfo -F version nvidia 2>/dev/null)

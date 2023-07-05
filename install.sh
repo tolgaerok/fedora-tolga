@@ -22,7 +22,7 @@ sudo dnf update -y
 sudo dnf autoremove -y
 sudo fwupdmgr refresh --force && sudo fwupdmgr get-updates && sudo fwupdmgr update -y
 
-# Install mpg123
+# Install some apps
 echo -e "Install afew useful packages...\n"
 
 sudo dnf install -y mpg123 rhythmbox python3 python3-pip libffi-devel openssl-devel
@@ -50,7 +50,7 @@ if ! sudo flatpak remote-list | grep -q "flathub"; then
     sudo flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
 fi
 
-## Update Flatpak
+# Update Flatpak
 sudo flatpak update
 
 ## Install flatpak apps

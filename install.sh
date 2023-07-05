@@ -23,9 +23,15 @@ sudo dnf autoremove -y
 sudo fwupdmgr refresh --force && sudo fwupdmgr get-updates && sudo fwupdmgr update -y
 
 # Install some apps
-echo -e "Install afew useful packages...\n"
+echo -e "Install a few useful packages...\n"
 
 sudo dnf install -y mpg123 rhythmbox python3 python3-pip libffi-devel openssl-devel
+
+echo -e "Installing Google Chrome browser...\n"
+
+wget https://dl.google.com/linux/direct/google-chrome-stable_current_x86_64.rpm
+sudo dnf install -y ./google-chrome-stable_current_x86_64.rpm
+rm -f google-chrome-stable_current_x86_64.rpm
 
 sleep 2
 clear
@@ -42,7 +48,6 @@ sudo dnf autoremove -y
 sleep 2
 clear
 
-# Set-up flatpak and some flatpak software
 echo -e "Install Flatpak apps...\n"
 
 ## Enable Flatpak
@@ -53,7 +58,7 @@ fi
 # Update Flatpak
 sudo flatpak update
 
-## Install flatpak apps
+# Install flatpak apps
 packages=(
     app.drey.Dialect
     com.anydesk.Anydesk
@@ -88,7 +93,7 @@ for package in "${packages[@]}"; do
     fi
 done
 
-# Double check for latest flatpak updates and remove flatpak cruff
+# Double check for the latest flatpak updates and remove flatpak cruft
 flatpak update --assumeyes
 flatpak uninstall --unused --delete-data --assumeyes
 
@@ -159,7 +164,10 @@ echo -e "\e[94mInstall SAMBA and dependencies\e[0m\n"
 sudo dnf install samba samba-client samba-common cifs-utils winbind -y
 
 # Enable and start SMB and NMB services
-sudo systemctl enable --now smb nmb
+sudo systemctl enable smb
+sudo systemctl enable nmb
+sudo systemctl start smb
+sudo systemctl start nmb
 
 # Configure the firewall
 sudo firewall-cmd --add-service=samba --permanent && sudo firewall-cmd --reload && sudo firewall-cmd --add-service=samba
@@ -449,11 +457,24 @@ sudo nvidia-settings
 read -r -p "
 ..... Complete" -t 1 -n 1 -s
 
+echo -e "Cleaning up and updating the system...\n"
+
+sudo dnf autoremove -y
+sudo dnf clean all
+sudo dnf check-update
+sudo dnf update -y
+
+sleep 2
+clear
+
 echo "Done. Time to defrag or fstrim."
 sudo fstrim -av
-echo ""
-echo "Operation completed."
-echo ""
+echo -e "\n\n----------------------------------------------"
+echo -e "|                                            |"
+echo -e "|        Setup Complete! Enjoy fedora!       |"
+echo -e "|                                            |"
+echo -e "----------------------------------------------\n\n"
+
 
 # Display Nvidia version installed
 driver_version=$(modinfo -F version nvidia 2>/dev/null)

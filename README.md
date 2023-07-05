@@ -32,7 +32,7 @@ sudo dnf install git -y
 2. Open Terminal, type:
 
 ```sh
-git clone tolgaerok/fedora-tolga
+git clone https://github.com/tolgaerok/fedora-tolga.git
 cd ./fedora-tolga
 ```
 

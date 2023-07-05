@@ -22,13 +22,10 @@ sudo dnf update -y
 sudo dnf autoremove -y
 sudo fwupdmgr refresh --force && sudo fwupdmgr get-updates && sudo fwupdmgr update -y
 
-# Install nala first
-sudo dnf install -y nala
-
 # Install mpg123
-echo -e "Install MP3 codec...\n"
+echo -e "Install afew useful packages...\n"
 
-sudo dnf install -y mpg123
+sudo dnf install -y mpg123 rhythmbox python3 python3-pip libffi-devel openssl-devel
 
 sleep 2
 clear
@@ -74,8 +71,9 @@ packages=(
     io.gitlab.o20.word
     org.audacityteam.Audacity
     org.gimp.GIMP
-    org.gnome.gitlab.YaLTeR.VideoTrimmer
     org.gnome.Shotwell
+    org.gnome.SimpleScan
+    org.gnome.gitlab.YaLTeR.VideoTrimmer
     org.kde.krita
     org.kde.kweather
 )

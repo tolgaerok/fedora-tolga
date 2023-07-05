@@ -64,7 +64,6 @@ packages=(
     com.anydesk.Anydesk
     com.bitwarden.desktop
     com.calibre_ebook.calibre
-    com.getpostman.Postman
     com.github.unrud.VideoDownloader
     com.sindresorhus.Caprine
     com.sublimetext.three
@@ -73,7 +72,6 @@ packages=(
     io.github.aandrew_me.ytdn
     io.github.ltiber.Pwall
     io.github.mimbrero.WhatsAppDesktop
-    io.gitlab.o20.word
     org.audacityteam.Audacity
     org.gimp.GIMP
     org.gnome.Shotwell

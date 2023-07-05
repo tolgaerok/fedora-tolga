@@ -15,11 +15,37 @@
 Tolga Erok
 2/7/2023
 ```
+The following script automates various steps for modifying the system configuration, installing the Nvidia driver, and preparing the system for optimal performance. Here's a breakdown of the script's actions:
 
-
+- Check if the script is run as root.
+- Set up variables for user pictures, Samba, and wallpaper directories.
+- Update the system and install the "nala" package.
+- Install additional software packages, including mpg123, media codecs, and various applications using Flatpak.
+- Download and install TeamViewer and Visual Studio Code.
+- Install PowerShell and configure system components.
+- Speed up DNF package manager and set up RPM Fusion repositories.
+- Install Samba and its dependencies.
+- Copy custom Samba files and configure Samba user and group.
+- Create and configure custom Samba folders and user shares.
+- Configure the fstab file to mount network shares on boot.
+- Create mount points and set permissions for the shares.
+- Mount the shares and start Samba services.
+- Test the fstab entries by listing the mounted directories.
+- Copy wallpapers to the user's home directory.
+- Enable Free and non-free RPM Fusion repositories.
+- Update the core system: This step updates the core system packages, including the kernel, and performs necessary upgrades and cleanups.
+- Install Nvidia: The script installs the Nvidia driver and related packages, such as kmod-nvidia, akmod-nvidia, and xorg-x11-drv-nvidia-cuda. It also installs additional components for CUDA/nvdec/nvenc support and Vulkan.
+- Cleaning up grub and uninstalling the Nouveau driver: The script modifies the grub configuration by appending necessary lines and disabling the Nouveau driver during boot. It also removes the xorg-x11-drv-nouveau package and updates the grub configuration.
+- Configure Nvidia: This step launches the Nvidia settings utility for further configuration.
+- Defrag or fstrim: The script prompts to perform a defragmentation or fstrim operation.
+- Completion and Nvidia version: It displays the Nvidia driver version installed on the system.
+- Reboot: The system automatically reboots after a 4-minute countdown.
 
 # *Summary*
-Overall, the script automates the installation of various software packages, configuration of Samba shares, and setting up system components, providing a streamlined process for setting up a fedora system.
+*Please note that executing this script may have implications on your system, such as modifying the bootloader configuration and installing or removing packages. Ensure that you have a backup and understand the `consequences` before proceeding.*
+
+*The script provides a comprehensive solution for installing the Nvidia driver and optimizing system performance. It starts by enabling the Free and non-free RPM Fusion repositories, updates the core system, and then proceeds to install the Nvidia driver and its related packages. Additionally, the script takes care of `cleaning up the grub` configuration and uninstalling the `Nouveau` driver.*
+
 
 ## *`How to run?`*
 

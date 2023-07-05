@@ -17,18 +17,15 @@ SAMBA="/etc/samba"
 SMB_DIR="$builddir/SAMBA"
 WALLPAPERS_DIR="$builddir/WALLPAPERS"
 
-# Update packages list and update system
+# Update packages list and update system first
+sudo dnf update -y
 sudo dnf autoremove -y
-sudo fwupdmgr get-devices
-sudo fwupdmgr refresh --force
-sudo fwupdmgr get-updates
-sudo fwupdmgr update -y
+sudo fwupdmgr refresh --force && sudo fwupdmgr get-updates && sudo fwupdmgr update -y
 
 # Install nala first
 sudo dnf install -y nala
 
-# Install some software
-## Install mpg123
+# Install mpg123
 echo -e "Install MP3 codec...\n"
 
 sudo dnf install -y mpg123
@@ -43,6 +40,7 @@ sudo dnf install -y libdvdcss libdrm-devel gtk3-devel gcc pkg-config --alloweras
 sudo dnf install -y gstreamer1-plugins-{bad-\*,good-\*,ugly-\*,base} gstreamer1-libav --exclude=gstreamer1-plugins-bad-free-devel ffmpeg gstreamer-ffmpeg --allowerasing --skip-broken
 sudo dnf install -y lame\* --exclude=lame-devel
 sudo dnf group upgrade -y --with-optional Multimedia
+sudo dnf autoremove -y
 
 sleep 2
 clear
@@ -91,6 +89,10 @@ for package in "${packages[@]}"; do
         echo "$package is already installed. Skipping..."
     fi
 done
+
+# Double check for latest flatpak updates and remove flatpak cruff
+flatpak update --assumeyes
+flatpak uninstall --unused --delete-data --assumeyes
 
 echo -e "\nSoftware install complete..."
 
@@ -158,6 +160,15 @@ echo -e "\e[94mInstall SAMBA and dependencies\e[0m\n"
 # Install Samba and its dependencies
 sudo dnf install samba samba-client samba-common cifs-utils winbind -y
 
+# Enable and start SMB and NMB services
+sudo systemctl enable --now smb nmb
+
+# Configure the firewall
+sudo firewall-cmd --add-service=samba --permanent && sudo firewall-cmd --reload && sudo firewall-cmd --add-service=samba
+
+# Set SELinux booleans
+sudo setsebool -P samba_enable_home_dirs on && sudo setsebool -P samba_export_all_rw on && sudo setsebool -P smbd_anon_write 1
+
 sleep 3
 clear
 
@@ -209,9 +220,6 @@ echo "SMB_DIR: $SMB_DIR"
 echo "SMB TARGET_DIR: $SAMBA"
 echo ""
 
-# Refresh /etc/samba
-sudo systemctl restart smb.service
-
 read -r -p "Continuing...
 " -t 1 -n 1 -s
 
@@ -219,10 +227,8 @@ read -r -p "Continuing...
 read -r -p "Set-up samba user & group's
 " -t 2 -n 1 -s
 
-sudo groupadd samba
-sudo useradd -m tolga
+sudo useradd -m -G samba tolga
 sudo smbpasswd -a tolga
-sudo usermod -aG samba tolga
 
 read -r -p "
 Continuing..." -t 1 -n 1 -s
@@ -252,6 +258,15 @@ sudo usermod -aG sambashare tolga
 read -r -p "
 Continuing..." -t 1 -n 1 -s
 
+read -r -p "Restarting SMB and NMB services
+" -t 2 -n 1 -s
+
+# Restart SMB and NMB services
+sudo systemctl restart smb nmb
+
+read -r -p "
+Continuing..." -t 1 -n 1 -s
+
 # Configure fstab
 read -r -p "Configure fstab
 " -t 2 -n 1 -s
@@ -275,7 +290,7 @@ done
 
 echo "Mount entries added to /etc/fstab.
 "
-
+# Refreshes the systemd configuration/fstab
 sudo systemctl daemon-reload
 
 read -r -p "
@@ -285,20 +300,16 @@ Continuing..." -t 1 -n 1 -s
 read -r -p "Create mount points and set permissions
 " -t 2 -n 1 -s
 
-sudo mkdir -p /mnt/Budget-Archives
-sudo mkdir -p /mnt/home-profiles
-sudo mkdir -p /mnt/linux-data
-sudo mkdir -p /mnt/smb
-sudo mkdir -p /mnt/smb-budget
-sudo mkdir -p /mnt/smb-rsync
-sudo mkdir -p /mnt/windows-data
-sudo chmod 777 /mnt/Budget-Archives
-sudo chmod 777 /mnt/home-profiles
-sudo chmod 777 /mnt/linux-data
-sudo chmod 777 /mnt/smb
-sudo chmod 777 /mnt/smb-budget
-sudo chmod 777 /mnt/smb-rsync
-sudo chmod 777 /mnt/windows-data
+sudo mkdir -p /mnt/Budget-Archives /mnt/home-profiles /mnt/linux-data /mnt/smb /mnt/smb-budget /mnt/smb-rsync /mnt/windows-data
+sudo chmod 777 /mnt/Budget-Archives /mnt/home-profiles /mnt/linux-data /mnt/smb /mnt/smb-budget /mnt/smb-rsync /mnt/windows-data
+
+# More secure setup, but not necessary for my home usage
+#sudo mkdir -p /mnt/{Budget-Archives,home-profiles,linux-data,smb,smb-budget,smb-rsync,windows-data}
+#sudo chown tolga:samba /mnt/Budget-Archives /mnt/home-profiles /mnt/linux-data /mnt/smb /mnt/smb-budget /mnt/smb-rsync /mnt/windows-data
+#sudo chmod 770 /mnt/Budget-Archives /mnt/home-profiles /mnt/linux-data /mnt/smb /mnt/smb-budget /mnt/smb-rsync /mnt/windows-data
+#sudo gpasswd -a tolga usershares
+#sudo setfacl -m "g:usershares:rwx" /mnt/Budget-Archives /mnt/home-profiles /mnt/linux-data /mnt/smb /mnt/smb-budget /mnt/smb-rsync /mnt/windows-data
+#sudo setfacl -d -m "g:usershares:rwx" /mnt/Budget-Archives /mnt/home-profiles /mnt/linux-data /mnt/smb /mnt/smb-budget /mnt/smb-rsync /mnt/windows-data
 
 read -r -p "
 Continuing..." -t 1 -n 1 -s
@@ -319,6 +330,8 @@ sudo systemctl restart smb.service nmb.service || {
     echo "Failed to restart services"
     exit 1
 }
+
+# Refreshes the systemd configuration/fstab
 sudo systemctl daemon-reload
 
 read -r -p "
@@ -393,24 +406,13 @@ sudo dnf install -y https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-rel
 sudo dnf install -y rpmfusion-free-release-tainted --allowerasing --skip-broken
 
 ## Update core-system
-sudo dnf groupupdate core -y
-sudo dnf update -y # and reboot if you are not on the latest kernel
-sudo dnf upgrade --refresh
+sudo dnf upgrade -y && sudo dnf autoremove -y
 sudo dnf groupupdate -y core
 sudo dnf install -y dnf-plugins-core
-sudo dnf autoremove -y
-sudo fwupdmgr get-devices
-sudo fwupdmgr refresh --force
-sudo fwupdmgr get-updates
-sudo fwupdmgr update -y
+sudo fwupdmgr refresh --force && sudo fwupdmgr update -y
 
 ## Install Nvidia
-sudo dnf -y install kmod-nvidia
-sudo dnf install -y akmod-nvidia             # rhel/centos users can use kmod-nvidia instead
-sudo dnf install -y xorg-x11-drv-nvidia-cuda #optional for cuda/nvdec/nvenc support
-sudo dnf install -y xorg-x11-drv-nvidia-cuda-libs
-sudo dnf install -y vdpauinfo libva-vdpau-driver libva-utils
-sudo dnf install -y vulkan
+sudo dnf install -y kmod-nvidia akmod-nvidia xorg-x11-drv-nvidia-cuda xorg-x11-drv-nvidia-cuda-libs vdpauinfo libva-vdpau-driver libva-utils vulkan
 sudo dnf autoremove -y
 
 sleep 1

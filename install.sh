@@ -27,7 +27,7 @@ sudo fwupdmgr refresh --force && sudo fwupdmgr get-updates && sudo fwupdmgr upda
 # Install some apps
 echo -e "Install a few useful packages...\n"
 
-sudo dnf install mpg123 rhythmbox python3 python3-pip libffi-devel openssl-devel kate -y
+sudo dnf install mpg123 rhythmbox python3 python3-pip libffi-devel openssl-devel kate neofetch -y
 
 echo -e "Installing Google Chrome browser...\n"
 

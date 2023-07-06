@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Tolga Erok    My personal fedora installer
+# Tolga Erok    My personal fedora installer - Tested on: fedora 37 & 38 KDE
 # 28/6/2023
 
 # Check if Script is Run as Root

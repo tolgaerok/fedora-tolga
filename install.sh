@@ -1,6 +1,7 @@
 #!/bin/bash
 
-# Tolga Erok    My personal fedora installer - Tested on: fedora 37 & 38 KDE
+# My personal fedora installer, tested on: fedora 37 and 38 KDE
+# Tolga Erok
 # 28/6/2023
 
 # Check if Script is Run as Root
@@ -178,14 +179,14 @@ sudo testparm -s
 sleep 2
 
 # Configure the firewall
-sudo firewall-cmd --add-service=samba --permanent 
-sudo firewall-cmd --add-service=samba 
+sudo firewall-cmd --add-service=samba --permanent
+sudo firewall-cmd --add-service=samba
 sudo firewall-cmd --runtime-to-permanent
-sudo firewall-cmd --reload 
+sudo firewall-cmd --reload
 
 # Set SELinux booleans
-sudo setsebool -P samba_enable_home_dirs on 
-sudo setsebool -P samba_export_all_rw on 
+sudo setsebool -P samba_enable_home_dirs on
+sudo setsebool -P samba_export_all_rw on
 sudo setsebool -P smbd_anon_write 1
 
 sleep 3
@@ -518,7 +519,6 @@ echo -e "|                                            |"
 echo -e "|        Setup Complete! Enjoy fedora!       |"
 echo -e "|                                            |"
 echo -e "----------------------------------------------\n\n"
-
 
 # Display Nvidia version installed
 driver_version=$(modinfo -F version nvidia 2>/dev/null)

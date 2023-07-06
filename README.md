@@ -66,7 +66,7 @@ cd ./fedora-tolga
 
 ```sh
 chmod u+x ./install.sh
-./install.sh
+sudo ./install.sh
 ```
 
 ## *Other repositories in my git hub:*

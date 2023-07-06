@@ -15,17 +15,18 @@ builddir=$(pwd)
 USER_PIC="/home/$username/Pictures/CUSTOM-WALLPAPERS"
 SAMBA="/etc/samba"
 SMB_DIR="$builddir/SAMBA"
-WALLPAPERS_DIR="$builddir/WALLPAPERS"
+WALLPAPERS_DIR="$builddir/WALLPAPER"
 
 # Update packages list and update system first
 sudo dnf update -y
+sudo dnf upgrade --refresh
 sudo dnf autoremove -y
 sudo fwupdmgr refresh --force && sudo fwupdmgr get-updates && sudo fwupdmgr update -y
 
 # Install some apps
 echo -e "Install a few useful packages...\n"
 
-sudo dnf install -y mpg123 rhythmbox python3 python3-pip libffi-devel openssl-devel
+sudo dnf install mpg123 rhythmbox python3 python3-pip libffi-devel openssl-devel kate -y
 
 echo -e "Installing Google Chrome browser...\n"
 
@@ -57,6 +58,8 @@ fi
 
 # Update Flatpak
 sudo flatpak update
+
+echo -e "Updating cache, this will take awhile...\n"
 
 # Install flatpak apps
 packages=(
@@ -98,8 +101,8 @@ flatpak uninstall --unused --delete-data --assumeyes
 echo -e "\nSoftware install complete..."
 
 # Download teamviewer
-download_url="https://dl.teamviewer.com/download/linux/version_15x/teamviewer_15.43.6_amd64.rpm"
-download_location="/tmp/teamviewer_15.43.6_amd64.rpm"
+download_url="https://download.teamviewer.com/download/linux/teamviewer.x86_64.rpm?utm_source=google&utm_medium=cpc&utm_campaign=au%7Cb%7Cpr%7C22%7Cjun%7Ctv-core-download-sn%7Cfree%7Ct0%7C0&utm_content=Download&utm_term=teamviewer+download"
+download_location="/tmp/teamviewer.x86_64.rpm"
 
 echo "Downloading TeamViewer..."
 wget -O "$download_location" "$download_url"
@@ -111,6 +114,8 @@ sudo dnf install "$download_location" -y
 # Cleanup
 echo "Cleaning up..."
 rm "$download_location"
+
+echo "TeamViewer installation completed."
 
 # Download Visual Studio Code
 download_url="https://code.visualstudio.com/sha/download?build=stable&os=linux-rpm-x64"
@@ -159,19 +164,29 @@ clear
 echo -e "\e[94mInstall SAMBA and dependencies\e[0m\n"
 
 # Install Samba and its dependencies
-sudo dnf install samba samba-client samba-common cifs-utils samba-usershares winbind -y
+sudo dnf install samba samba-client samba-common cifs-utils samba-usershares sudo dnf -y
 
 # Enable and start SMB and NMB services
 sudo systemctl enable smb
 sudo systemctl enable nmb
 sudo systemctl start smb
 sudo systemctl start nmb
+sudo systemctl restart smb.service
+sudo systemctl restart nmb.service
+sudo systemctl start smb nmb
+sudo testparm -s
+sleep 2
 
 # Configure the firewall
-sudo firewall-cmd --add-service=samba --permanent && sudo firewall-cmd --reload && sudo firewall-cmd --add-service=samba
+sudo firewall-cmd --add-service=samba --permanent 
+sudo firewall-cmd --add-service=samba 
+sudo firewall-cmd --runtime-to-permanent
+sudo firewall-cmd --reload 
 
 # Set SELinux booleans
-sudo setsebool -P samba_enable_home_dirs on && sudo setsebool -P samba_export_all_rw on && sudo setsebool -P smbd_anon_write 1
+sudo setsebool -P samba_enable_home_dirs on 
+sudo setsebool -P samba_export_all_rw on 
+sudo setsebool -P smbd_anon_write 1
 
 sleep 3
 clear
@@ -231,8 +246,10 @@ read -r -p "Continuing...
 read -r -p "Set-up samba user & group's
 " -t 2 -n 1 -s
 
-sudo useradd -m -G samba tolga
+sudo groupadd samba
+sudo useradd -m tolga
 sudo smbpasswd -a tolga
+sudo usermod -aG samba tolga
 
 read -r -p "
 Continuing..." -t 1 -n 1 -s
@@ -256,6 +273,7 @@ sudo mkdir /var/lib/samba/usershares
 sudo groupadd -r sambashare
 sudo chown root:sambashare /var/lib/samba/usershares
 sudo chmod 1770 /var/lib/samba/usershares
+sudo restorecon -R /var/lib/samba/usershares
 sudo gpasswd sambashare -a tolga
 sudo usermod -aG sambashare tolga
 
@@ -304,8 +322,20 @@ Continuing..." -t 1 -n 1 -s
 read -r -p "Create mount points and set permissions
 " -t 2 -n 1 -s
 
-sudo mkdir -p /mnt/Budget-Archives /mnt/home-profiles /mnt/linux-data /mnt/smb /mnt/smb-budget /mnt/smb-rsync /mnt/windows-data
-sudo chmod 777 /mnt/Budget-Archives /mnt/home-profiles /mnt/linux-data /mnt/smb /mnt/smb-budget /mnt/smb-rsync /mnt/windows-data
+sudo mkdir -p /mnt/Budget-Archives
+sudo mkdir -p /mnt/home-profiles
+sudo mkdir -p /mnt/linux-data
+sudo mkdir -p /mnt/smb
+sudo mkdir -p /mnt/smb-budget
+sudo mkdir -p /mnt/smb-rsync
+sudo mkdir -p /mnt/windows-data
+sudo chmod 777 /mnt/Budget-Archives
+sudo chmod 777 /mnt/home-profiles
+sudo chmod 777 /mnt/linux-data
+sudo chmod 777 /mnt/smb
+sudo chmod 777 /mnt/smb-budget
+sudo chmod 777 /mnt/smb-rsync
+sudo chmod 777 /mnt/windows-data
 
 # More secure setup, but not necessary for my home usage
 #sudo mkdir -p /mnt/{Budget-Archives,home-profiles,linux-data,smb,smb-budget,smb-rsync,windows-data}
@@ -324,15 +354,15 @@ read -r -p "Mount the shares and start services
 
 sudo mount -a || {
     echo "Mount failed"
-    exit 1
+    sleep 3
 }
 sudo systemctl enable smb nmb || {
     echo "Failed to enable services"
-    exit 1
+    sleep 3
 }
 sudo systemctl restart smb.service nmb.service || {
     echo "Failed to restart services"
-    exit 1
+    sleep 3
 }
 
 # Refreshes the systemd configuration/fstab
@@ -346,31 +376,31 @@ read -r -p "Test the fstab entries" -t 2 -n 1 -s
 
 sudo ls /mnt/home-profiles || {
     echo "Failed to list Linux data"
-    exit 1
+    sleep 3
 }
 sudo ls /mnt/linux-data || {
     echo "Failed to list Linux data"
-    exit 1
+    sleep 3
 }
 sudo ls /mnt/smb || {
     echo "Failed to list SMB share"
-    exit 1
+    sleep 3
 }
 sudo ls /mnt/windows-data || {
     echo "Failed to list Windows data"
-    exit 1
+    sleep 3
 }
 sudo ls /mnt/Budget-Archives || {
     echo "Failed to list Windows data"
-    exit 1
+    sleep 3
 }
 sudo ls /mnt/smb-budget || {
     echo "Failed to list Windows data"
-    exit 1
+    sleep 3
 }
 sudo ls /mnt/smb-rsync || {
     echo "Failed to list Windows data"
-    exit 1
+    sleep 3
 }
 
 read -r -p "
@@ -386,7 +416,7 @@ read -r -p "Copy WALLPAPER to user home
 mkdir -p "$USER_PIC"
 
 # Copy the files from WALLPAPERS to TARGET_DIR
-cp -r "$WALLPAPERS_DIR"/* "$USER_PIC"
+cp -r "$WALLPAPERS_DIR"/fedora37.png "$USER_PIC"
 chown -R $username:$username /home/$username
 
 # Check if the copy operation was successful
@@ -402,7 +432,7 @@ echo "WALLPAPERTARGET_DIR: $USER_PIC"
 echo ""
 
 echo "Continuing..."
-sleep 1
+sleep 3
 clear
 
 ## Enable Free and non-free RPM fusions
@@ -417,9 +447,10 @@ sudo fwupdmgr refresh --force && sudo fwupdmgr update -y
 
 ## Install Nvidia
 sudo dnf install -y kmod-nvidia akmod-nvidia xorg-x11-drv-nvidia-cuda xorg-x11-drv-nvidia-cuda-libs vdpauinfo libva-vdpau-driver libva-utils vulkan
+sudo dnf install akmods && sudo akmods
 sudo dnf autoremove -y
 
-sleep 1
+sleep 2
 clear
 
 read -r -p "Cleaning up grub and uninstalling nouveau driver
@@ -451,6 +482,21 @@ sudo dnf remove xorg-x11-drv-nouveau
 
 ## Configure Nvidia while we're here
 sudo nvidia-settings
+
+# Installing fonts
+sudo dnf install fontawesome-fonts fontawesome-fonts-web
+wget https://github.com/ryanoasis/nerd-fonts/releases/download/v2.1.0/FiraCode.zip
+unzip FiraCode.zip -d /usr/share/fonts
+wget https://github.com/ryanoasis/nerd-fonts/releases/download/v2.1.0/Meslo.zip
+unzip Meslo.zip -d /usr/share/fonts
+wget https://github.com/tolgaerok/fonts-tolga/raw/main/WPS-FONTS.zip
+unzip WPS-FONTS.zip -d /usr/share/fonts
+
+# Reloading Font
+sudo fc-cache -vf
+
+# Removing zip Files
+rm ./FiraCode.zip ./Meslo.zip ./WPS-FONTS.zip
 
 read -r -p "
 ..... Complete" -t 1 -n 1 -s

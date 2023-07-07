@@ -266,20 +266,66 @@ sudo chmod 770 /home/fedora
 read -r -p "
 Continuing..." -t 1 -n 1 -s
 
-# Configure user shares
-read -r -p "Create and configure user shares
-" -t 2 -n 1 -s
+# Configure usershares plugin
+read -r -p "Create and configure Samba Filesharing Plugin ...
+" -t 3 -n 1 -s
 
-sudo mkdir /var/lib/samba/usershares
+# Prompt for the desired username
+read -p $'\n'"Enter the username to configure Samba Filesharing Plugin for: " username
+
+# Set umask value
+umask 0002
+
+# Set the shared folder path
+shared_folder="/home/$username"
+
+# Set permissions for the shared folder and parent directories (excluding hidden files and .cache directory)
+find "$shared_folder" -type d ! -path '/.' ! -path '/.cache' -exec chmod 0757 {} ; 2>/dev/null
+
+# Create the sambashares group if it doesn't exist
 sudo groupadd -r sambashares
-sudo chown root:sambashares /var/lib/samba/usershares
+
+# Create the usershares directory and set permissions
+sudo mkdir -p /var/lib/samba/usershares
+sudo chown $username:sambashares /var/lib/samba/usershares
 sudo chmod 1770 /var/lib/samba/usershares
+
+# Restore SELinux context for the usershares directory
 sudo restorecon -R /var/lib/samba/usershares
-sudo gpasswd sambashares -a tolga
-sudo usermod -aG sambashares tolga
+
+# Add the user to the sambashares group
+sudo gpasswd sambashares -a $username
+
+# Add the user to the sambashares group (alternative method)
+sudo usermod -aG sambashares $username
+
+# Set permissions for the user's home directory
+sudo chmod 0757 /home/$username
+
+# Start the SMB and NMB services
+sudo systemctl start smb.service
+sudo systemctl start nmb.service
+
+# Prompt for user to open browser to kde store - share plugin
+read -p $'\n'"Press Enter to open Samba Filesharing Plugin website. Please select [ install ] when ready ...  " 
+
+# Check if Firefox is installed
+if command -v firefox >/dev/null 2>&1; then
+    sudo -u $username firefox "https://apps.kde.org/kdenetwork_filesharing/"
+    exit 0
+fi
+
+# Check if Chrome is installed
+if command -v google-chrome-stable >/dev/null 2>&1; then
+    sudo -u $username google-chrome-stable "https://apps.kde.org/kdenetwork_filesharing/"
+    exit 0
+fi
+
+# If neither Firefox nor Chrome is found, display an error message
+echo "Error: Neither Firefox nor Chrome is installed."
 
 read -r -p "
-Continuing..." -t 1 -n 1 -s
+Continuing ... " -t 1 -n 1 -s
 
 read -r -p "Restarting SMB and NMB services
 " -t 2 -n 1 -s

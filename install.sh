@@ -168,15 +168,11 @@ echo -e "\e[94mInstall SAMBA and dependencies\e[0m\n"
 sudo dnf install samba samba-client samba-common cifs-utils samba-usershares sudo dnf -y
 
 # Enable and start SMB and NMB services
-sudo systemctl enable smb
-sudo systemctl enable nmb
-sudo systemctl start smb
-sudo systemctl start nmb
-sudo systemctl restart smb.service
-sudo systemctl restart nmb.service
-sudo systemctl start smb nmb
-sudo testparm -s
-sleep 2
+sudo systemctl enable smb.service nmb.service
+sudo systemctl start smb.service nmb.service
+
+# Restart SMB and NMB services (optional)
+sudo systemctl restart smb.service nmb.service
 
 # Configure the firewall
 sudo firewall-cmd --add-service=samba --permanent
@@ -302,10 +298,6 @@ sudo usermod -aG sambashares $username
 # Set permissions for the user's home directory
 sudo chmod 0757 /home/$username
 
-# Start the SMB and NMB services
-sudo systemctl start smb.service
-sudo systemctl start nmb.service
-
 # Prompt for user to open browser to kde store - share plugin
 read -p $'\n'"Press Enter to open Samba Filesharing Plugin website. Please select [ install ] when ready ...  " 
 
@@ -330,8 +322,17 @@ Continuing ... " -t 1 -n 1 -s
 read -r -p "Restarting SMB and NMB services
 " -t 2 -n 1 -s
 
-# Restart SMB and NMB services
-sudo systemctl restart smb nmb
+# Restart SMB and NMB services (optional)
+sudo systemctl restart smb.service nmb.service
+
+read -r -p "
+Continuing..." -t 1 -n 1 -s
+
+read -r -p "Checking smb.conf file
+" -t 2 -n 1 -s
+
+# Check Samba configuration
+sudo testparm -s
 
 read -r -p "
 Continuing..." -t 1 -n 1 -s

@@ -1,3 +1,10 @@
+
+
+# *`My fedora environment`*
+```sh
+Tolga Erok
+2/7/2023
+```
 <div align="left">
   <table style="border-collapse: collapse; width: 100%; border: none;">
     <td align="center" style="border: none;">
@@ -10,11 +17,6 @@
   </table>
 </div>
 
-# *`My fedora environment`*
-```sh
-Tolga Erok
-2/7/2023
-```
 The following script automates various steps for modifying the system configuration, installing the Nvidia driver, and preparing the system for optimal performance. Here's a breakdown of the script's actions:
 
 - Check if the script is run as root.

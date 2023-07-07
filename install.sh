@@ -243,10 +243,16 @@ read -r -p "Continuing...
 read -r -p "Set-up samba user & group's
 " -t 2 -n 1 -s
 
-sudo groupadd samba
-sudo useradd -m tolga
-sudo smbpasswd -a tolga
-sudo usermod -aG samba tolga
+# Prompt for the desired username for samba
+read -p $'\n'"Enter the USERNAME to add to Samba: " sambausername
+
+# Prompt for the desired name for samba
+read -p $'\n'"Enter the GROUP name to add username to Samba: " sambagroup
+
+sudo groupadd $sambagroup
+sudo useradd -m $sambausername
+sudo smbpasswd -a $sambausername
+sudo usermod -aG $sambagroup $sambausername
 
 read -r -p "
 Continuing..." -t 1 -n 1 -s

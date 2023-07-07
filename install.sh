@@ -271,12 +271,12 @@ read -r -p "Create and configure user shares
 " -t 2 -n 1 -s
 
 sudo mkdir /var/lib/samba/usershares
-sudo groupadd -r sambashare
-sudo chown root:sambashare /var/lib/samba/usershares
+sudo groupadd -r sambashares
+sudo chown root:sambashares /var/lib/samba/usershares
 sudo chmod 1770 /var/lib/samba/usershares
 sudo restorecon -R /var/lib/samba/usershares
-sudo gpasswd sambashare -a tolga
-sudo usermod -aG sambashare tolga
+sudo gpasswd sambashares -a tolga
+sudo usermod -aG sambashares tolga
 
 read -r -p "
 Continuing..." -t 1 -n 1 -s

@@ -165,7 +165,7 @@ clear
 echo -e "\e[94mInstall SAMBA and dependencies\e[0m\n"
 
 # Install Samba and its dependencies
-sudo dnf install samba samba-client samba-common cifs-utils samba-usershares sudo dnf -y
+sudo dnf install samba samba-client samba-common cifs-utils samba-usershares -y
 
 # Enable and start SMB and NMB services
 sudo systemctl enable smb.service nmb.service

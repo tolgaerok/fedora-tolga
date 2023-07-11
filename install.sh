@@ -57,16 +57,22 @@ if ! sudo flatpak remote-list | grep -q "flathub"; then
     sudo flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
 fi
 
+echo -e "Install Flatpak apps...\n"
+
+# Enable Flatpak
+if ! flatpak remote-list | grep -q "flathub"; then
+    flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
+fi
+
 # Update Flatpak
-sudo flatpak update
+flatpak update -y
 
-echo -e "Updating cache, this will take awhile...\n"
+echo -e "Updating cache, this will take a while...\n"
 
-# Install flatpak apps
+# Install Flatpak apps
 packages=(
     app.drey.Dialect
     com.anydesk.Anydesk
-    com.bitwarden.desktop
     com.calibre_ebook.calibre
     com.github.unrud.VideoDownloader
     com.sindresorhus.Caprine
@@ -74,7 +80,6 @@ packages=(
     com.transmissionbt.Transmission
     com.wps.Office
     io.github.aandrew_me.ytdn
-    io.github.ltiber.Pwall
     io.github.mimbrero.WhatsAppDesktop
     org.audacityteam.Audacity
     org.gimp.GIMP
@@ -87,19 +92,20 @@ packages=(
 
 # Install each package if not already installed
 for package in "${packages[@]}"; do
-    if ! sudo flatpak list | grep -q "$package"; then
+    if ! flatpak list | grep -q "$package"; then
         echo "Installing $package..."
-        sudo flatpak install -y flathub "$package"
+        flatpak install -y flathub "$package"
     else
         echo "$package is already installed. Skipping..."
     fi
 done
 
-# Double check for the latest flatpak updates and remove flatpak cruft
-flatpak update --assumeyes
-flatpak uninstall --unused --delete-data --assumeyes
+# Double check for the latest Flatpak updates and remove Flatpak cruft
+flatpak update -y
+flatpak uninstall --unused --delete-data -y
 
 echo -e "\nSoftware install complete..."
+
 
 # Download teamviewer
 download_url="https://download.teamviewer.com/download/linux/teamviewer.x86_64.rpm?utm_source=google&utm_medium=cpc&utm_campaign=au%7Cb%7Cpr%7C22%7Cjun%7Ctv-core-download-sn%7Cfree%7Ct0%7C0&utm_content=Download&utm_term=teamviewer+download"

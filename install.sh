@@ -18,19 +18,38 @@ SAMBA="/etc/samba"
 SMB_DIR="$builddir/SAMBA"
 WALLPAPERS_DIR="$builddir/WALLPAPER"
 
+# Remove afew before updates
+sudo dnf rm libreoffice* \
+gnome-text-editor \
+gnome-boxes -y
+
 # Update packages list and update system first
 sudo dnf update -y
 sudo dnf upgrade --refresh
 sudo dnf autoremove -y
-sudo fwupdmgr refresh --force && sudo fwupdmgr get-updates && sudo fwupdmgr update -y
+
+# Install RPM Fusion for Fedora 38
+sudo dnf install https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm https://mirrors.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm
+sudo dnf groupupdate core
+
+# Enable the RPM Fusion repositories
+sudo dnf config-manager --set-enabled rpmfusion-free rpmfusion-nonfree
+
+# Firmware updates via lvfs
+sudo dnf install fwupd
+sudo systemctl start fwupd && sudo systemctl enable fwupd
+sudo fwupdmgr get-devices && sudo fwupdmgr refresh --force 
+sudo fwupdmgr get-updates && sudo fwupdmgr update -y
 
 # Install some apps
 echo -e "Install a few useful packages...\n"
-
-sudo dnf install mpg123 rhythmbox python3 python3-pip libffi-devel openssl-devel kate neofetch -y
+sudo dnf install -y kernel-headers kernel-devel tar bzip2 make automake gcc gcc-c++ pciutils elfutils-libelf-devel libglvnd-opengl libglvnd-glx libglvnd-devel acpid pkgconfig dkms
+sudo dnf install -y mpg123 rhythmbox python3 python3-pip libffi-devel openssl-devel kate neofetch 
+sudo flatpak install -y com.mattjakeman.ExtensionManager com.github.tchx84.Flatseal
+sudo dnf install -y PackageKit timeshift grub-customizer dconf-editor gedit gjs
+sudo dnf install -y unzip p7zip p7zip-plugins unrar
 
 echo -e "Installing Google Chrome browser...\n"
-
 wget https://dl.google.com/linux/direct/google-chrome-stable_current_x86_64.rpm
 sudo dnf install -y ./google-chrome-stable_current_x86_64.rpm
 rm -f google-chrome-stable_current_x86_64.rpm
@@ -41,16 +60,27 @@ clear
 echo -e "Installing Tweaks, media codecs, extensions & plugins\n"
 
 sudo dnf groupupdate -y sound-and-video
-sudo dnf install -y libdvdcss libdrm-devel gtk3-devel gcc pkg-config --allowerasing --skip-broken
-sudo dnf install -y gstreamer1-plugins-{bad-\*,good-\*,ugly-\*,base} gstreamer1-libav --exclude=gstreamer1-plugins-bad-free-devel ffmpeg gstreamer-ffmpeg --allowerasing --skip-broken
-sudo dnf install -y lame\* --exclude=lame-devel
 sudo dnf group upgrade -y --with-optional Multimedia
+sudo dnf groupupdate -y sound-and-video --allowerasing --skip-broken
+sudo dnf groupupdate multimedia sound-and-video
+sudo dnf install -y gstreamer1-plugins-{bad-\*,good-\*,ugly-\*,base} gstreamer1-libav --exclude=gstreamer1-plugins-bad-free-devel ffmpeg gstreamer-ffmpeg --allowerasing --skip-broken
+sudo dnf install -y lame\* --exclude=lame-devel --allowerasing --skip-broken
+sudo dnf install -y libdvdcss libdrm-devel gtk3-devel gcc pkg-config --allowerasing --skip-broken
+sudo dnf install -y gstreamer1-plugins-{bad-\*,good-\*,base} gstreamer1-plugin-openh264 gstreamer1-libav --exclude=gstreamer1-plugins-bad-free-devel --allowerasing --skip-broken
 sudo dnf autoremove -y
 
+# sudo dnf swap chromium chromium-freeworld --allowerasing
+sudo dnf install ffmpeg-libs
 sleep 2
 clear
 
 echo -e "Install Flatpak apps...\n"
+
+# Fedora 38 comes with Flatpak pre-installed but not enabled. 
+flatpak remote-delete flathub
+flatpak remote-delete fedora
+flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
+flatpak update
 
 ## Enable Flatpak
 if ! sudo flatpak remote-list | grep -q "flathub"; then
@@ -506,12 +536,26 @@ sudo dnf install -y dnf-plugins-core
 sudo fwupdmgr refresh --force && sudo fwupdmgr update -y
 
 ## Install Nvidia
+sudo dnf config-manager --add-repo https://developer.download.nvidia.com/compute/cuda/repos/fedora37/x86_64/cuda-fedora37.repo
 sudo dnf install -y kmod-nvidia akmod-nvidia xorg-x11-drv-nvidia-cuda xorg-x11-drv-nvidia-cuda-libs vdpauinfo libva-vdpau-driver libva-utils vulkan
+sudo dnf module install -y nvidia-driver:latest-dkms
 sudo dnf install akmods && sudo akmods
 sudo dnf autoremove -y
 
 sleep 2
 clear
+
+# Improve BatteryLife for laptops
+sudo dnf install tlp tlp-rdw -y
+systemctl mask power-profiles-deamon
+sudo dnf install powertop -y
+
+# VideoAcceleration ffmpeg ffmpeg-libs intel-media-driver
+sudo dnf install libva libva-utils xorg-x11-drv-intel intel-media-va-driver-non-free libva-drm2 libva-x11-2 -y
+sudo dnf config-manager --set-enabled fedora-cisco-openh264 -y
+sudo dnf install gstreamer1-plugin-openh264 mozilla-openh264 -y -y -y
+echo 'please enable the OpenH264 in Firefox settings'
+read
 
 read -r -p "Cleaning up grub and uninstalling nouveau driver
 " -t 2 -n 1 -s

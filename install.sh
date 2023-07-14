@@ -76,12 +76,6 @@ clear
 
 echo -e "Install Flatpak apps...\n"
 
-# Fedora 38 comes with Flatpak pre-installed but not enabled. 
-flatpak remote-delete flathub
-flatpak remote-delete fedora
-flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
-flatpak update
-
 ## Enable Flatpak
 if ! sudo flatpak remote-list | grep -q "flathub"; then
     sudo flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
@@ -101,9 +95,6 @@ echo -e "Updating cache, this will take a while...\n"
 
 # Install Flatpak apps
 packages=(
-    app.drey.Dialect
-    com.anydesk.Anydesk
-    com.calibre_ebook.calibre
     com.github.unrud.VideoDownloader
     com.sindresorhus.Caprine
     com.sublimetext.three
@@ -536,7 +527,7 @@ sudo dnf install -y dnf-plugins-core
 sudo fwupdmgr refresh --force && sudo fwupdmgr update -y
 
 ## Install Nvidia
-sudo dnf config-manager --add-repo https://developer.download.nvidia.com/compute/cuda/repos/fedora37/x86_64/cuda-fedora37.repo
+# sudo dnf config-manager --add-repo https://developer.download.nvidia.com/compute/cuda/repos/fedora37/x86_64/cuda-fedora37.repo
 sudo dnf install -y kmod-nvidia akmod-nvidia xorg-x11-drv-nvidia-cuda xorg-x11-drv-nvidia-cuda-libs vdpauinfo libva-vdpau-driver libva-utils vulkan
 sudo dnf module install -y nvidia-driver:latest-dkms
 sudo dnf install akmods && sudo akmods

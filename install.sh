@@ -528,9 +528,28 @@ sudo fwupdmgr refresh --force && sudo fwupdmgr update -y
 
 ## Install Nvidia
 # sudo dnf config-manager --add-repo https://developer.download.nvidia.com/compute/cuda/repos/fedora37/x86_64/cuda-fedora37.repo
-sudo dnf install -y kmod-nvidia akmod-nvidia xorg-x11-drv-nvidia-cuda xorg-x11-drv-nvidia-cuda-libs vdpauinfo libva-vdpau-driver libva-utils vulkan
+#sudo dnf install -y kmod-nvidia akmod-nvidia xorg-x11-drv-nvidia-cuda xorg-x11-drv-nvidia-cuda-libs vdpauinfo libva-vdpau-driver libva-utils vulkan
+#sudo dnf module install -y nvidia-driver:latest-dkms
+#sudo dnf install akmods && sudo akmods
+
+# Install kernel-devel, kernel-headers, gcc, make, dkms, acpid, libglvnd-glx, libglvnd-opengl, libglvnd-devel, and pkgconfig
+sudo dnf install kernel-devel-$(uname -r) kernel-headers-$(uname -r) gcc make dkms acpid libglvnd-glx libglvnd-opengl libglvnd-devel pkgconfig
+
+# Add the NVIDIA CUDA repository
+sudo dnf config-manager --add-repo http://developer.download.nvidia.com/compute/cuda/repos/rhel9/$(uname -i)/cuda-rhel9.repo
+
+# Make sure the package lists are up-to-date
+sudo dnf makecache
+
+# Install the latest NVIDIA driver with dkms support
 sudo dnf module install -y nvidia-driver:latest-dkms
-sudo dnf install akmods && sudo akmods
+
+# Install additional NVIDIA-related packages
+sudo dnf install -y kmod-nvidia akmod-nvidia xorg-x11-drv-nvidia-cuda xorg-x11-drv-nvidia-cuda-libs vdpauinfo libva-vdpau-driver libva-utils vulkan
+
+# Run akmods to build and install the NVIDIA kernel modules
+sudo dnf install -y akmods && sudo akmods
+
 sudo dnf autoremove -y
 
 sleep 2

@@ -529,6 +529,7 @@ sudo fwupdmgr refresh --force && sudo fwupdmgr update -y
 ## Install Nvidia
 # sudo dnf config-manager --add-repo https://developer.download.nvidia.com/compute/cuda/repos/fedora37/x86_64/cuda-fedora37.repo
 #sudo dnf install -y kmod-nvidia akmod-nvidia xorg-x11-drv-nvidia-cuda xorg-x11-drv-nvidia-cuda-libs vdpauinfo libva-vdpau-driver libva-utils vulkan
+#sudo dnf install -y gcc kernel-headers kernel-devel akmod-nvidia xorg-x11-drv-nvidia xorg-x11-drv-nvidia-libs
 #sudo dnf module install -y nvidia-driver:latest-dkms
 #sudo dnf install akmods && sudo akmods
 

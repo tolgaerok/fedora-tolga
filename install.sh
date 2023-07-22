@@ -48,7 +48,12 @@ sudo dnf install -y mpg123 rhythmbox python3 python3-pip libffi-devel openssl-de
 sudo flatpak install -y com.mattjakeman.ExtensionManager com.github.tchx84.Flatseal
 sudo dnf install -y PackageKit timeshift grub-customizer dconf-editor gedit gjs
 sudo dnf install -y unzip p7zip p7zip-plugins unrar sxiv lsd
-sudo dnf install -y fontawesome-fonts nerd-fonts powerline-fonts 
+
+# Install some fonts
+sudo dnf install -y fontawesome-fonts powerline-fonts 
+sudo mkdir -p ~/.local/share/fonts
+cd ~/.local/share/fonts && curl -fLO https://github.com/ryanoasis/nerd-fonts/raw/HEAD/patched-fonts/DroidSansMono/DroidSansMNerdFont-Regular.otf
+sudo fc-cache -f -v
 
 
 echo -e "Installing Google Chrome browser...\n"

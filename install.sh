@@ -42,12 +42,23 @@ sudo fwupdmgr get-devices && sudo fwupdmgr refresh --force
 sudo fwupdmgr get-updates && sudo fwupdmgr update -y
 
 # Install some apps
-echo -e "Install a few useful packages...\n"
+echo -e "Installing a few useful packages...\n"
+
+# Development tools and libraries
 sudo dnf install -y kernel-headers kernel-devel tar bzip2 make automake gcc gcc-c++ pciutils elfutils-libelf-devel libglvnd-opengl libglvnd-glx libglvnd-devel acpid pkgconfig dkms
-sudo dnf install -y mpg123 rhythmbox python3 python3-pip libffi-devel openssl-devel kate neofetch 
+
+# Multimedia and productivity tools
+sudo dnf install -y mpg123 rhythmbox python3 python3-pip libffi-devel openssl-devel kate neofetch
+
+# Flatpak applications
 sudo flatpak install -y com.mattjakeman.ExtensionManager com.github.tchx84.Flatseal
+
+# Additional software
 sudo dnf install -y PackageKit timeshift grub-customizer dconf-editor gedit gjs
+
+# Archive and file utilities
 sudo dnf install -y unzip p7zip p7zip-plugins unrar sxiv lsd
+
 
 # Install some fonts
 sudo dnf install -y fontawesome-fonts powerline-fonts 
@@ -527,10 +538,19 @@ clear
 sudo dnf install -y https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm https://mirrors.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm
 sudo dnf install -y rpmfusion-free-release-tainted --allowerasing --skip-broken
 
-## Update core-system
+# Update core system packages
+echo -e "Updating core system packages...\n"
+
+# Upgrade installed packages and remove unused dependencies
 sudo dnf upgrade -y && sudo dnf autoremove -y
+
+# Update the core package group
 sudo dnf groupupdate -y core
+
+# Install DNF plugins core (if not already installed)
 sudo dnf install -y dnf-plugins-core
+
+# Refresh and update firmware (if applicable)
 sudo fwupdmgr refresh --force && sudo fwupdmgr update -y
 
 ## Install Nvidia
@@ -563,17 +583,30 @@ sudo dnf autoremove -y
 sleep 2
 clear
 
-# Improve BatteryLife for laptops
+#!/bin/bash
+
+# Improve Battery Life for Laptops
+echo -e "Installing packages to improve battery life for laptops...\n"
+
+# Install TLP and TLP-rdw for power management
 sudo dnf install tlp tlp-rdw -y
+
+# Disable power-profiles-deamon service
 systemctl mask power-profiles-deamon
+
+# Install powertop for power monitoring and tuning
 sudo dnf install powertop -y
 
-# VideoAcceleration ffmpeg ffmpeg-libs intel-media-driver
+# Install video acceleration packages
 sudo dnf install libva libva-utils xorg-x11-drv-intel intel-media-va-driver-non-free libva-drm2 libva-x11-2 -y
+
+# Enable support for Cisco OpenH264 codec
 sudo dnf config-manager --set-enabled fedora-cisco-openh264 -y
-sudo dnf install gstreamer1-plugin-openh264 mozilla-openh264 -y -y -y
-echo 'please enable the OpenH264 in Firefox settings'
-read
+sudo dnf install gstreamer1-plugin-openh264 mozilla-openh264 -y
+
+echo 'Please enable the OpenH264 in Firefox settings.'
+read -n 1 -s -r -p "Press any key to continue..."
+
 
 read -r -p "Cleaning up grub and uninstalling nouveau driver
 " -t 2 -n 1 -s

@@ -48,6 +48,8 @@ sudo dnf install -y mpg123 rhythmbox python3 python3-pip libffi-devel openssl-de
 sudo flatpak install -y com.mattjakeman.ExtensionManager com.github.tchx84.Flatseal
 sudo dnf install -y PackageKit timeshift grub-customizer dconf-editor gedit gjs
 sudo dnf install -y unzip p7zip p7zip-plugins unrar
+sudo dnf install -y fontawesome-fonts nerd-fonts powerline-fonts lsd
+
 
 echo -e "Installing Google Chrome browser...\n"
 wget https://dl.google.com/linux/direct/google-chrome-stable_current_x86_64.rpm

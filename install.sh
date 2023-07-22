@@ -47,8 +47,8 @@ sudo dnf install -y kernel-headers kernel-devel tar bzip2 make automake gcc gcc-
 sudo dnf install -y mpg123 rhythmbox python3 python3-pip libffi-devel openssl-devel kate neofetch 
 sudo flatpak install -y com.mattjakeman.ExtensionManager com.github.tchx84.Flatseal
 sudo dnf install -y PackageKit timeshift grub-customizer dconf-editor gedit gjs
-sudo dnf install -y unzip p7zip p7zip-plugins unrar
-sudo dnf install -y fontawesome-fonts nerd-fonts powerline-fonts lsd
+sudo dnf install -y unzip p7zip p7zip-plugins unrar sxiv lsd
+sudo dnf install -y fontawesome-fonts nerd-fonts powerline-fonts 
 
 
 echo -e "Installing Google Chrome browser...\n"

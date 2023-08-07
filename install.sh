@@ -551,14 +551,14 @@ sudo dnf groupupdate -y core
 sudo dnf install -y dnf-plugins-core
 
 # Refresh and update firmware (if applicable)
-sudo fwupdmgr refresh --force && sudo fwupdmgr update -y
+# sudo fwupdmgr refresh --force && sudo fwupdmgr update -y
 
 ## Install Nvidia
-# sudo dnf config-manager --add-repo https://developer.download.nvidia.com/compute/cuda/repos/fedora37/x86_64/cuda-fedora37.repo
-#sudo dnf install -y kmod-nvidia akmod-nvidia xorg-x11-drv-nvidia-cuda xorg-x11-drv-nvidia-cuda-libs vdpauinfo libva-vdpau-driver libva-utils vulkan
-#sudo dnf install -y gcc kernel-headers kernel-devel akmod-nvidia xorg-x11-drv-nvidia xorg-x11-drv-nvidia-libs
-#sudo dnf module install -y nvidia-driver:latest-dkms
-#sudo dnf install akmods && sudo akmods
+sudo dnf config-manager --add-repo https://developer.download.nvidia.com/compute/cuda/repos/fedora37/x86_64/cuda-fedora37.repo
+sudo dnf install -y kmod-nvidia akmod-nvidia xorg-x11-drv-nvidia-cuda xorg-x11-drv-nvidia-cuda-libs vdpauinfo libva-vdpau-driver libva-utils vulkan
+sudo dnf install -y gcc kernel-headers kernel-devel akmod-nvidia xorg-x11-drv-nvidia xorg-x11-drv-nvidia-libs
+sudo dnf module install -y nvidia-driver:latest-dkms
+sudo dnf install akmods && sudo akmods
 
 # Install kernel-devel, kernel-headers, gcc, make, dkms, acpid, libglvnd-glx, libglvnd-opengl, libglvnd-devel, and pkgconfig
 sudo dnf install kernel-devel-$(uname -r) kernel-headers-$(uname -r) gcc make dkms acpid libglvnd-glx libglvnd-opengl libglvnd-devel pkgconfig
@@ -574,6 +574,10 @@ sudo dnf module install -y nvidia-driver:latest-dkms
 
 # Install additional NVIDIA-related packages
 sudo dnf install -y kmod-nvidia akmod-nvidia xorg-x11-drv-nvidia-cuda xorg-x11-drv-nvidia-cuda-libs vdpauinfo libva-vdpau-driver libva-utils vulkan
+sudo dnf install gcc-c++ mesa-libGLU-devel libX11-devel libXi-devel libXmu-devel git
+
+## Dependencies for 2_Graphics examples ##
+dnf install freeglut freeglut-devel
 
 # Run akmods to build and install the NVIDIA kernel modules
 sudo dnf install -y akmods && sudo akmods

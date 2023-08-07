@@ -35,12 +35,6 @@ sudo dnf groupupdate core
 # Enable the RPM Fusion repositories
 sudo dnf config-manager --set-enabled rpmfusion-free rpmfusion-nonfree
 
-# Firmware updates via lvfs
-sudo dnf install fwupd
-sudo systemctl start fwupd && sudo systemctl enable fwupd
-sudo fwupdmgr get-devices && sudo fwupdmgr refresh --force 
-sudo fwupdmgr get-updates && sudo fwupdmgr update -y
-
 # Install some apps
 echo -e "Installing a few useful packages...\n"
 
@@ -436,14 +430,6 @@ sudo chmod 777 /mnt/smb-budget
 sudo chmod 777 /mnt/smb-rsync
 sudo chmod 777 /mnt/windows-data
 
-# More secure setup, but not necessary for my home usage
-#sudo mkdir -p /mnt/{Budget-Archives,home-profiles,linux-data,smb,smb-budget,smb-rsync,windows-data}
-#sudo chown tolga:samba /mnt/Budget-Archives /mnt/home-profiles /mnt/linux-data /mnt/smb /mnt/smb-budget /mnt/smb-rsync /mnt/windows-data
-#sudo chmod 770 /mnt/Budget-Archives /mnt/home-profiles /mnt/linux-data /mnt/smb /mnt/smb-budget /mnt/smb-rsync /mnt/windows-data
-#sudo gpasswd -a tolga usershares
-#sudo setfacl -m "g:usershares:rwx" /mnt/Budget-Archives /mnt/home-profiles /mnt/linux-data /mnt/smb /mnt/smb-budget /mnt/smb-rsync /mnt/windows-data
-#sudo setfacl -d -m "g:usershares:rwx" /mnt/Budget-Archives /mnt/home-profiles /mnt/linux-data /mnt/smb /mnt/smb-budget /mnt/smb-rsync /mnt/windows-data
-
 read -r -p "
 Continuing..." -t 1 -n 1 -s
 
@@ -549,9 +535,6 @@ sudo dnf groupupdate -y core
 
 # Install DNF plugins core (if not already installed)
 sudo dnf install -y dnf-plugins-core
-
-# Refresh and update firmware (if applicable)
-# sudo fwupdmgr refresh --force && sudo fwupdmgr update -y
 
 # Update the package manager
 sudo dnf update

@@ -553,34 +553,32 @@ sudo dnf install -y dnf-plugins-core
 # Refresh and update firmware (if applicable)
 # sudo fwupdmgr refresh --force && sudo fwupdmgr update -y
 
-# Install NVIDIA repository for Fedora 37
-sudo dnf config-manager --add-repo https://developer.download.nvidia.com/compute/cuda/repos/fedora37/x86_64/cuda-fedora37.repo
+# Update the package manager
+sudo dnf update
 
-# Install NVIDIA drivers and related packages
-sudo dnf install -y kmod-nvidia akmod-nvidia xorg-x11-drv-nvidia-cuda xorg-x11-drv-nvidia-cuda-libs vdpauinfo libva-vdpau-driver libva-utils vulkan
+# Install required dependencies
+sudo dnf install -y epel-release
+sudo dnf install -y dnf-plugins-core
 
-# Install general development packages
-sudo dnf install -y gcc kernel-headers kernel-devel akmod-nvidia xorg-x11-drv-nvidia xorg-x11-drv-nvidia-libs
+# Enable the RPM Fusion repository
+sudo dnf config-manager --set-enabled rpmfusion-free rpmfusion-nonfree
 
-# Install the latest NVIDIA driver with dkms support
-sudo dnf module install -y nvidia-driver:latest-dkms
+# Enable the COPR repository for the NVIDIA driver
+sudo dnf copr enable t0xic0der/nvidia-auto-installer-for-fedora
 
-# Install additional packages
-sudo dnf install -y gcc-c++ mesa-libGLU-devel libX11-devel libXi-devel libXmu-devel git
+# Install NVIDIA driver and related packages
+sudo dnf install -y kmod-nvidia akmod-nvidia xorg-x11-drv-nvidia-cuda xorg-x11-drv-nvidia-cuda-libs vdpauinfo libva-vdpau-driver libva-utils vulkan --allowerasing
 
-# Install dependencies for 2_Graphics examples
-sudo dnf install -y freeglut freeglut-devel
+# Install CUDA-specific packages (if available)
+# Note: You can skip this step if the CUDA repository is still returning a 404 error.
+# The CUDA repository might not be available yet for Fedora 38.
+# sudo dnf install -y cuda
 
-# Run akmods to build and install the NVIDIA kernel modules
-sudo dnf install -y akmods && sudo akmods
+# Install additional packages for development (optional)
+sudo dnf install -y gcc-c++ libstdc++-devel make dkms acpid libglvnd-glx libglvnd-opengl libglvnd-devel pkgconf-pkg-config
 
-# Install necessary packages for CUDA
-# Note: The following repository URL may currently not be available for Fedora 38
-sudo dnf config-manager --add-repo http://developer.download.nvidia.com/compute/cuda/repos/rhel9/$(uname -i)/cuda-rhel9.repo
-sudo dnf makecache
-sudo dnf module install -y nvidia-driver:latest-dkms
-
-# Install additional CUDA packages (not available in this example due to 404 error)
+# Check kmods exist for the current kernel version
+sudo akmods --force
 
 # Perform system cleanup
 sudo dnf autoremove -y

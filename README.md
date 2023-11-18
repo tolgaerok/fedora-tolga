@@ -7,8 +7,12 @@ Tolga Erok
 ```
 ## NEW
 ```sh
-My Fedora 39 Tweaks: https://github.com/tolgaerok/tolga-scripts/tree/main/Fedora39
-My Fedora 39 addins: sudo bash -c "$(curl -fsSL https://raw.githubusercontent.com/tolgaerok/tolga-scripts/main/Fedora39/TolgaFedora39.sh)"
+My Fedora 39
+Tweaks:
+https://github.com/tolgaerok/tolga-scripts/tree/main/Fedora39
+
+Fedora 39 addins:
+sudo bash -c "$(curl -fsSL https://raw.githubusercontent.com/tolgaerok/tolga-scripts/main/Fedora39/TolgaFedora39.sh)"
 ```
 
 <div align="left">
@@ -78,8 +82,12 @@ sudo ./install.sh
 ```
 ## NEW
 ```sh
-My Fedora 39 Tweaks: https://github.com/tolgaerok/tolga-scripts/tree/main/Fedora39
-My Fedora 39 addins: sudo bash -c "$(curl -fsSL https://raw.githubusercontent.com/tolgaerok/tolga-scripts/main/Fedora39/TolgaFedora39.sh)"
+My Fedora 39
+Tweaks:
+https://github.com/tolgaerok/tolga-scripts/tree/main/Fedora39
+
+Fedora 39 addins:
+sudo bash -c "$(curl -fsSL https://raw.githubusercontent.com/tolgaerok/tolga-scripts/main/Fedora39/TolgaFedora39.sh)"
 ```
 
 ## *Other repositories in my git hub:*

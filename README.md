@@ -5,9 +5,8 @@
 Tolga Erok
 2/7/2023
 ```
-## NEW
+## NEW ( FEDORA 39 )
 ```sh
-My Fedora 39
 Tweaks:
 https://github.com/tolgaerok/tolga-scripts/tree/main/Fedora39
 

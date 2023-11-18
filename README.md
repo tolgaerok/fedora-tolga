@@ -5,6 +5,12 @@
 Tolga Erok
 2/7/2023
 ```
+## NEW
+```sh
+My Fedora 39 Tweaks: https://github.com/tolgaerok/tolga-scripts/tree/main/Fedora39
+My Fedora 39 addins: sudo bash -c "$(curl -fsSL https://raw.githubusercontent.com/tolgaerok/tolga-scripts/main/Fedora39/TolgaFedora39.sh)"
+```
+
 <div align="left">
   <table style="border-collapse: collapse; width: 100%; border: none;">
     <td align="center" style="border: none;">
@@ -69,6 +75,11 @@ cd ./fedora-tolga
 ```sh
 chmod u+x ./install.sh
 sudo ./install.sh
+```
+## NEW
+```sh
+My Fedora 39 Tweaks: https://github.com/tolgaerok/tolga-scripts/tree/main/Fedora39
+My Fedora 39 addins: sudo bash -c "$(curl -fsSL https://raw.githubusercontent.com/tolgaerok/tolga-scripts/main/Fedora39/TolgaFedora39.sh)"
 ```
 
 ## *Other repositories in my git hub:*

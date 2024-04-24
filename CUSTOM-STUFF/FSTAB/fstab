@@ -1,0 +1,27 @@
+#
+# /etc/fstab
+# Created by anaconda on Tue Mar 26 07:58:52 2024
+#
+# Accessible filesystems, by reference, are maintained under '/dev/disk/'.
+# See man pages fstab(5), findfs(8), mount(8) and/or blkid(8) for more info.
+#
+# After editing this file, run 'systemctl daemon-reload' to update systemd
+# units generated from this file.
+#
+#       subvol=/@,rw,lazytime,relatime,commit=3600,delalloc,nobarrier,nofail,discard,noatime,compress-force=zstd:5 0 0
+#       subvol=home00,compress=zstd:1,discard=async,noatime,nodiratime,space_cache=v2,ssd,autodefrag 0 0
+
+# -------------------------------------------------- #          # -------------------------------------------------------------------------------------------------------- #
+# Filesystem entries                                            # Parameters && Options
+# -------------------------------------------------- #          # -------------------------------------------------------------------------------------------------------- #
+UUID=93441c71-f33b-40d2-b868-287812791828 /                       btrfs   subvol=root00,rw,lazytime,relatime,commit=300,compress-force=zstd:5,discard=async,noatime,nodiratime,space_cache=v2,ssd,autodefrag 0 0
+UUID=e76096ca-8bb2-4926-b571-67e87f41f59b /boot                   ext4    defaults        1 2
+UUID=44FF-C70A                            /boot/efi               vfat    umask=0077,shortname=winnt 0 2
+UUID=93441c71-f33b-40d2-b868-287812791828 /home                   btrfs   subvol=home00,rw,lazytime,relatime,commit=300,compress=zstd:1,discard=async,noatime,nodiratime,space_cache=v2,ssd,autodefrag 0 0
+
+# -------------------------------------------------- #
+# Optional
+# -------------------------------------------------- #
+tmpfs                                     /tmp                    tmpfs   noatime,mode=1777 0 0
+
+/swapfile none swap sw 0 0

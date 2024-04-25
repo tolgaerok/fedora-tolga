@@ -22,6 +22,13 @@ Horrible move fedora!
 
 ```sh
 sudo dnf install plasma-workspace-x11.x86_64 && sudo dnf install kwin-x11
+```
+
+- Nvidia installer?
+```sh
+sudo dnf install dnf-plugins-core -y
+sudo dnf copr enable t0xic0der/nvidia-auto-installer-for-fedora -y
+sudo dnf install nvautoinstall -y
 
 ```
 

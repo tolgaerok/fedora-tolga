@@ -5,12 +5,26 @@
 Tolga Erok
 2/7/2023
 ```
+
+## My personal fedora tweaks
+```sh
+My Personal Fedora 39 addins:
+sudo bash -c "$(curl -fsSL https://raw.githubusercontent.com/tolgaerok/tolga-scripts/main/Fedora39/TolgaFedora39.sh)"
+```
+
+## NEW ( FEDORA 40 )
+```sh
+Horrible move fedora!
+
+To get X11 back on login screen and in general:
+
+sudo dnf install kwin-x11 plasma-workspace-x11
+sudo dnf install plasma-workspace-x11.x86_64
+```
+
 ## NEW ( FEDORA 39 )
 ```sh
-Tweaks:
-https://github.com/tolgaerok/tolga-scripts/tree/main/Fedora39
-
-Fedora 39 addins:
+My Personal Fedora 39 addins:
 sudo bash -c "$(curl -fsSL https://raw.githubusercontent.com/tolgaerok/tolga-scripts/main/Fedora39/TolgaFedora39.sh)"
 ```
 

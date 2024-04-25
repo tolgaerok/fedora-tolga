@@ -21,8 +21,8 @@ Horrible move fedora!
 - To get X11 back on login screen and in general:
 
 ```sh
-sudo dnf install kwin-x11 plasma-workspace-x11
-sudo dnf install plasma-workspace-x11.x86_64
+sudo dnf install plasma-workspace-x11.x86_64 && sudo dnf install kwin-x11
+
 ```
 
 ## NEW ( FEDORA 39 )

@@ -1,23 +1,26 @@
 
 
 # *`My fedora environment`*
-```sh
-Tolga Erok
-2/7/2023
-```
+- `Tolga Erok`
+- `2/7/2023`
 
-## My personal fedora tweaks
+
+## My personal fedora tweaks and set-up
+
+My Personal Fedora 39 tweaks and addons.
+- Check for new desktop icons:
+  
 ```sh
-My Personal Fedora 39 addins:
-sudo bash -c "$(curl -fsSL https://raw.githubusercontent.com/tolgaerok/tolga-scripts/main/Fedora39/TolgaFedora39.sh)"
+bash -c "$(curl -fsSL https://raw.githubusercontent.com/tolgaerok/tolga-scripts/main/Fedora39/setup.sh)"
+
 ```
 
 ## NEW ( FEDORA 40 )
-```sh
+
 Horrible move fedora!
+- To get X11 back on login screen and in general:
 
-To get X11 back on login screen and in general:
-
+```sh
 sudo dnf install kwin-x11 plasma-workspace-x11
 sudo dnf install plasma-workspace-x11.x86_64
 ```
